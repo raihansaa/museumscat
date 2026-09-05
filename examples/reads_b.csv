@@ -1,0 +1,9 @@
+image_file,verbatimDate,verbatimLocality,date_legibility,locality_legibility,raw
+sample_0001.jpeg,17-6-1922,Dyrehaven,clear,clear,"{""verbatimDate"": ""17-6-1922"", ""date_legibility"": ""clear"", ""verbatimLocality"": ""Dyrehaven"", ""locality_legibility"": ""clear""}"
+sample_0002.jpeg,3/6.1870,Ørholm,clear,partial,"{""verbatimDate"": ""3/6.1870"", ""date_legibility"": ""clear"", ""verbatimLocality"": ""Ørholm"", ""locality_legibility"": ""partial""}"
+sample_0003.jpeg,26.8.1920,MISSING,clear,partial,"{""verbatimDate"": ""26.8.1920"", ""date_legibility"": ""clear"", ""verbatimLocality"": ""MISSING"", ""locality_legibility"": ""partial""}"
+sample_0004.jpeg,MISSING,Rotholme Jyll. | Rotholme Jyll.,absent,clear,"{""verbatimDate"": ""MISSING"", ""date_legibility"": ""absent"", ""verbatimLocality"": ""Rotholme Jyll. | Rotholme Jyll."", ""locality_legibility"": ""clear""}"
+sample_0005.jpeg,21 Juni,MISSING,clear,absent,"{""verbatimDate"": ""21 Juni"", ""date_legibility"": ""clear"", ""verbatimLocality"": ""MISSING"", ""locality_legibility"": ""absent""}"
+sample_0006.jpeg,11/5-1896,Mön Hövblege,partial,partial,"{""verbatimDate"": ""11/5-1896"", ""date_legibility"": ""partial"", ""verbatimLocality"": ""Mön Hövblege"", ""locality_legibility"": ""partial""}"
+sample_0007.jpeg,19.V.1951,tisvilde,clear,clear,"{""verbatimDate"": ""19.V.1951"", ""date_legibility"": ""clear"", ""verbatimLocality"": ""tisvilde"", ""locality_legibility"": ""clear""}"
+sample_0008.jpeg,MISSING,Esbjerg V. Strand,absent,clear,"{""verbatimDate"": ""MISSING"", ""date_legibility"": ""absent"", ""verbatimLocality"": ""Esbjerg V. Strand"", ""locality_legibility"": ""clear""}"

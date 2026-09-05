@@ -1,0 +1,6 @@
+stratum,n_rows,n_with_frontier_read,vote_ned,frontier_ned,delta_aurc,P_better_group_bootstrap,vote_can_reach_these_rows,shipped
+4-0,52,31,0.0227,0.0172,-0.0015,0.534,no,no (harmful)
+3-1,39,32,0.1722,0.0283,-0.0027,0.725,no,no (below bar)
+2-1-1,55,52,0.2,0.0633,-0.0185,0.999,no,yes
+2-2,3,3,0.3667,0.0833,-0.0027,0.855,yes,yes
+1-1-1-1,51,47,0.2287,0.1576,-0.0156,0.997,yes,yes

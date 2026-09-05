@@ -1,0 +1,81 @@
+# MuseumSCAT — every tunable in one place, mirroring the numbers in the write-up.
+#
+# `data.root` defaults to examples/, so the pipeline runs end to end with no competition
+# data present. Point it at the real dataset (or set MUSEUMSCAT_DATA) to reproduce.
+
+data:
+  root: examples          # directory holding train.csv, test.csv and images/
+  images: images
+  train_csv: train.csv
+  test_csv: test.csv
+
+crop:
+  max_dim: 1600
+  work_size: 1200
+  pad_frac: 0.35
+  equipment_column_frac: 0.27   # left column: museum logo and colour chart
+  # Sanity bounds. A detected box outside these falls back to a generous crop, because a
+  # cropper that amputates labels produces CONFIDENT wrong answers.
+  min_area_frac: 0.12
+  min_width_frac: 0.24
+  max_x_frac: 0.45
+
+readers:
+  # Ordered strongest first: ties in the vote break toward the earlier reader.
+  ensemble:
+    - qwen2.5-VL-7B
+    - qwen/qwen3-vl-32b-instruct
+    - openai/gpt-4o
+    - anthropic/claude-sonnet-5
+  challenger: google/gemini-3.7-flash    # substitutes text; never votes
+  max_width: 1568
+  jpeg_quality: 90
+  max_tokens: 512
+  temperature: 0.0        # >0 samples a candidate pool; we never pushed past two draws
+  # Free-tier quota is per day AND per model, so rotating this pool yields ~120 free
+  # validated reads a day. NEVER add a "-lite" tier — see readers.py.
+  gemini_pool:
+    - gemini-3.7-flash
+    - gemini-3.6-flash
+    - gemini-3.5-flash
+    - gemini-3-flash-preview
+    - gemini-flash-latest
+    - gemini-2.5-flash
+
+substitution:
+  # Strata that cleared the bootstrap bar. 3-1 is EXCLUDED: it measured +0.00164 on
+  # held-out data, i.e. substituting where three of four readers agree makes things worse.
+  strata: ["2-1-1", "2-2", "1-1-1-1"]
+  keep_missing: true      # never let a challenger turn a real answer into MISSING
+
+confidence:
+  # Legibility -> base confidence. "absent" sits at 0.85, the second-highest band, which
+  # is exactly why a FALSE MISSING is the most expensive row shape in the metric.
+  legibility:
+    clear: 0.92
+    partial: 0.55
+    unreadable: 0.20
+    absent: 0.85
+  default: 0.35
+
+ranker:
+  # A CHALLENGER, not a shipped component: wholesale re-ranking went 0-for-8 on the
+  # hidden test set. Fit it to size the headroom, then use cohort demotion instead.
+  n_estimators: 100
+  max_depth: 2
+  learning_rate: 0.05
+  subsample: 0.8
+  seeds: 12
+  n_folds: 5              # GROUPED by gold locality cluster; ungrouped folds leak
+  random_seed: 42
+
+cohorts:
+  # Demotion tiers, ordered by severity. A row matching several falls to the deepest.
+  tiers: ["self-disagreement", "self-contradiction"]
+  # Break-even precision a demoted row must clear. Measured from the ratio of correct to
+  # false abstentions (30:6 locality, 59:5 date) — NOT the ~98% a general verifier needs.
+  break_even_precision:
+    locality: 0.29
+    date: 0.09
+  # Ship gate: a 100%-error cohort pays; 25%, 15% and 11% all cost score.
+  min_error_rate: 1.0

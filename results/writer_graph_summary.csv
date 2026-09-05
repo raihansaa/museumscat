@@ -1,0 +1,5 @@
+quantity,value,n,test,note
+baseline locality AURC (full-fit),0.0365,200,,the ordering the demotion is applied to
+graph_agree vs error correlation (all-4-agree rows),-0.305,56,Spearman rho p=0.022,"REAL p-value; only feature in the project that correlates with error inside the saturated block"
+best swept demotion delta_AURC,-0.0006,200,P(better)=0.667 group bootstrap over locality clusters,"ARGMAX of a 12-cell (tau,beta) sweep - report as such"
+ship bar,P>=0.90 AND delta<=-0.005 AND decile2-6 displaced>=20%,,,"NOT met by any of the 12 configurations"

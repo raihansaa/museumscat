@@ -1,0 +1,11 @@
+field,category,rows,share_of_rows_%,mean_NED,share_of_AURC_cost_%
+locality,multi-card / pipe composition,48,24.0,0.284,49.0
+locality,"false-absent (gold present, MISSING emitted)",11,5.5,1.0,18.4
+locality,partial read,11,5.5,0.413,16.7
+locality,character substitution (near miss),11,5.5,0.167,13.1
+locality,historical-variant normalisation,1,0.5,0.4,2.8
+locality,correct,118,59.0,0.0,0.0
+date,"false-absent (gold present, MISSING emitted)",5,2.5,1.0,67.6
+date,character substitution (near miss),14,7.0,0.154,27.1
+date,multi-card / pipe composition,5,2.5,0.461,5.3
+date,correct,176,88.0,0.0,0.0

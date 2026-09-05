@@ -1,0 +1,6 @@
+experiment,local_result,leaderboard_result,direction_match
+Frontier 5-way vote (250 rows),dAURC -0.0065 (labelled 200),-0.00051,yes
+Frontier stratum substitution (707 rows),dAURC -0.0136 (labelled 200),-0.00060,yes
+Uncorroborated-reader demotion,"AUC 0.725, P(better) 1.000",+0.00474 (+0.00568 reversed),NO
+"Learned candidate selector, all strata","dAURC -0.0319, P(better) 1.000",+0.00119,NO
+"Learned candidate selector, 3-1 only","dAURC -0.0022, P(better) 0.949",+0.00090,NO
