@@ -9,9 +9,8 @@ FAU Erlangen-Nürnberg.
 Final: **private 0.02300 / public 0.02203**, rank 14, 85 submissions.
 Journey: `0.10743 → 0.03336 → 0.02997 → 0.02928 → 0.02606 → 0.02474 → 0.02263 → 0.02203`.
 
-The findings below are ordered by how transferable they are to other collections, not by how
-much score they bought us. The most useful result here is the one that generalises furthest,
-not the one that ranked highest.
+The findings below are ordered by how well we think they transfer to other collections, rather
+than by how much score they bought us.
 
 ---
 
@@ -22,7 +21,7 @@ not the one that ranked highest.
 3. **Per-row majority vote** + grammar gating + post-filtering.
 4. **Gradient-boosted ranker** fitted on the 200 labels predicts normalised edit distance
    (NED); its prediction is the confidence column. Validated five-fold, **grouped by gold
-   locality cluster** — ungrouped folds leak badly, because the same locality recurs across trays.
+   locality cluster**. Ungrouped folds leak badly, because the same locality recurs across trays.
 5. **Text substitution**: gemini-3.7-flash re-reads and *replaces* the vote output, but only in
    agreement strata that clear a bootstrap bar.
 6. **Cohort demotion**: rule-defined cohorts pushed to the back of the ranking, order otherwise
@@ -50,16 +49,15 @@ Partitioning the 200 labelled rows by the agreement pattern of four readers:
 The two largest disagreement strata hold **106 of 200 rows and 83.9% of the locality AURC
 loss**. Unanimous reads take 27.5% of the metric's weight and contribute 5.9% of its loss.
 
-**Practical form:** you do not need a trained confidence model to triage a digitisation backlog.
-Run two readers, send the disagreements to a curator, auto-accept the rest. The winning entry
-measured the same thing on the full test set — 2% error where two readers agree, 38% where they
-disagree.
+In practice you do not need a trained confidence model to triage a digitisation backlog. Run two
+readers, send the disagreements to a curator, auto-accept the rest. The winning entry measured
+the same thing on the full test set: 2% error where two readers agree, 38% where they disagree.
 
 ### 2. A stronger reader should *substitute*, not *vote*
 
 This was our main result. A fifth reader added as an extra **vote** cannot overturn a read that
-already holds a plurality, so it never touches the 2–1–1 stratum — which is exactly where
-replacing the text pays most:
+already holds a plurality, so it never touches the 2–1–1 stratum, which is where replacing the
+text pays most:
 
 | stratum | ΔAURC from substitution | P(better) | reachable by a 5th vote? |
 |---|---|---|---|
@@ -86,20 +84,21 @@ Across 85 submissions, on the hidden test set:
 
 Every attempt to replace the confidence column with a better-looking one regressed, including
 two that reached P(better) = 1.000 locally. Moving a rule-defined cohort to the back while
-leaving everything else in order worked every single time. The winning entry states the same
+leaving everything else in order worked every time. The winning entry states the same
 rule from the other direction: *only lower confidence, never raise it*.
 
 ### 4. Rank by expected error *magnitude*, not error probability
 
-AURC weights a wrong row by how wrong it is. A false `MISSING` — the model emits nothing where
-the gold record has text — is NED 1.0, the worst possible row, and our system was emitting them
-at high confidence. Demoting rows where the model's own JSON contradicted itself (it noted
+AURC weights a wrong row by how wrong it is. A false `MISSING`, where the model emits nothing
+but the gold record has text, scores NED 1.0, the worst a row can score, and our system was
+emitting them at high confidence. Demoting rows where the model's own JSON contradicted itself (it noted
 reading a locality, then emitted `MISSING`) was the single largest win of the campaign, −0.00403.
 
-Break-even precision for such a cohort is only **29%** (locality) / **9%** (date), not the ~98%
-a general-purpose verifier needs. Cheap logical guarantees beat expensive statistical ones.
+Break-even precision for such a cohort is only **29%** (locality) / **9%** (date), against the
+roughly 98% a general-purpose verifier would need. A cheap logical check clears that bar; the
+statistical one we built did not.
 
-### 5. What the residual error actually is
+### 5. Where the residual error is
 
 Weighted by AURC cost, not by row count:
 
@@ -111,44 +110,45 @@ Weighted by AURC cost, not by row count:
 | character substitution | 13.1% | 27.1% |
 | historical-variant normalisation | 2.8% | — |
 
-**Locality error is not an OCR problem.** Pipes are metric-canonical — joining segments changes
-NED by 0.0003 — so the loss is in *which* physical cards get transcribed, and in presence/absence
-decisions. Better handwriting recognition does not address the dominant failure mode.
+**Locality error is not an OCR problem.** Pipes are metric-canonical (joining segments changes
+NED by 0.0003), so the loss sits in which physical cards get transcribed, and in presence and
+absence decisions. Better handwriting recognition would not touch the dominant failure mode.
 
 ### 6. Reader choice, briefly
 
-gemini-3.7-flash was the best reader we found and the cheapest — it beat Opus-5 head-to-head on
-hard rows at roughly 1/9 the cost, and all GPT-5.6 tiers we tested were far worse. Few-shot
-*image* exemplars **hurt** (+0.0018): showing the model example labels makes it pattern-match
-instead of read.
+gemini-3.7-flash was the best reader we found and also the cheapest. It beat Opus-5 head to head
+on hard rows at roughly a ninth of the cost, and every GPT-5.6 tier we tested was far worse.
+Few-shot image exemplars hurt (+0.0018); showing the model example labels seems to make it
+pattern-match rather than read.
 
-### 7. A measurement trap worth publishing
+### 7. A measurement trap
 
 **gemini-3.7-flash is not deterministic at temperature 0.** Only 34 of 40 localities reproduced
 on a byte-identical re-read. A single-run n=200 reader A/B therefore has a noise floor around
-±0.002 — the size of the effects we were chasing. We only found this because one experiment
-included a control arm that changed nothing. Always buy the control.
+±0.002, which is the size of the effects we were chasing. We only found this because one
+experiment happened to include a control arm that changed nothing. We would always include one
+now.
 
 ---
 
 ## Feedback on the challenge
 
-Genuinely well-posed, and the pipe canonicalisation in the metric is a good design choice — it
-scores *content* rather than formatting. Three observations:
+A well-posed competition, and the pipe canonicalisation in the metric is a good call: it scores
+content rather than formatting. Three things we noticed:
 
 1. **AURC rewards confidence calibration far more than transcription accuracy.** Perfectly
-   reordering the text we already submitted, changing not one character, projects to 0.00408 —
+   reordering the text we already submitted, changing not one character, projects to 0.00408,
    better than the winning score. Both we and the winner independently estimated the ordering
    headroom at 5–7×. If the intent is to drive better *reading*, the metric may be pointing
-   effort elsewhere; if the intent is to drive better *triage*, it is doing exactly its job.
-   Worth stating which, explicitly, in the task description.
+   effort elsewhere; if it is to drive better triage, it is doing its job. Either way, it would
+   help to say which in the task description.
 2. **200 labelled examples is below what validating a ranking lever needs.** Near the end our
    local measurement error exceeded the effects we were testing, and three methods that cleared
    local significance regressed on the leaderboard. A larger validation split, or an official
    public/private split disclosure, would let people iterate honestly.
-3. **A note that a specimen's fields may live on several physical cards** would help — the
-   single largest error category is composing across cards, and it took us a while to see that
-   it was a segment-selection problem rather than a recognition problem.
+3. **A note that a specimen's fields may live on several physical cards** would help. The single
+   largest error category is composing across cards, and it took us a while to see that as a
+   segment-selection problem rather than a recognition one.
 
 ---
 
@@ -182,12 +182,12 @@ scripts/                      one thin CLI per pipeline stage
   build_submission.py         assemble, validate, or --compare two finals
   evaluate_submission.py      local AURC + the ordering/reading decomposition
 
-examples/                     synthetic stand-ins — the pipeline runs with no real data
+examples/                     synthetic stand-ins, so the pipeline runs with no real data
 tests/test_core.py            30 tests, one per claim this write-up makes
 results/*.csv                 the nine aggregate tables behind every number above
 ```
 
-Every number in this write-up is generated from `results/` — nothing is retyped by hand.
+Every number in this write-up is generated from `results/`. Nothing is retyped by hand.
 
 ## Quickstart
 
@@ -212,8 +212,8 @@ python scripts/apply_cohorts.py \
 python scripts/build_submission.py --compare examples/submission.csv /tmp/demoted.csv
 ```
 
-On the toy data that takes locality AURC from `0.23705` to `0.03795` with both text columns
-reported `identical` — which is the entire argument of this write-up in two commands.
+On the toy data that takes locality AURC from `0.23705` to `0.03795`, with both text columns
+reported `identical`. That is the argument of this write-up, in two commands.
 
 To run it for real, point `config.yaml`'s `data.root` at the competition data (or set
 `MUSEUMSCAT_DATA`), export `OPENROUTER_API_KEY` or `GEMINI_API_KEY`, and work through
@@ -234,14 +234,13 @@ is committed here in `results/`, and every number in the write-up above comes fr
 ## Licence
 
 Code (`museumscat/`, `scripts/`) is MIT. The write-up text and the aggregate tables are
-CC BY 4.0. The competition images and ground truth are not ours to license and are not
-included — see the
-[MuseumSCAT dataset page](https://kaggle.com/competitions/museumscat-specimen-collection-annotation-task)
+CC BY 4.0. The competition images and ground truth are not ours to license and are not included.
+See the [MuseumSCAT dataset page](https://kaggle.com/competitions/museumscat-specimen-collection-annotation-task)
 for their terms.
 
 ## Contact
 
-Md Raihan — `md.raihan@fau.de` — Pattern Recognition Lab, Department of Computer Science,
+Md Raihan, `md.raihan@fau.de`, Pattern Recognition Lab, Department of Computer Science,
 Friedrich-Alexander-Universität Erlangen-Nürnberg.
 
-Questions about any table above are welcome; the diagnostics are the reusable part.
+Happy to answer questions about any of the tables above.

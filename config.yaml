@@ -1,4 +1,4 @@
-# MuseumSCAT — every tunable in one place, mirroring the numbers in the write-up.
+# MuseumSCAT: every tunable in one place, mirroring the numbers in the write-up.
 #
 # `data.root` defaults to examples/, so the pipeline runs end to end with no competition
 # data present. Point it at the real dataset (or set MUSEUMSCAT_DATA) to reproduce.
@@ -33,7 +33,7 @@ readers:
   max_tokens: 512
   temperature: 0.0        # >0 samples a candidate pool; we never pushed past two draws
   # Free-tier quota is per day AND per model, so rotating this pool yields ~120 free
-  # validated reads a day. NEVER add a "-lite" tier — see readers.py.
+  # validated reads a day. NEVER add a "-lite" tier, see readers.py.
   gemini_pool:
     - gemini-3.7-flash
     - gemini-3.6-flash
@@ -73,7 +73,7 @@ cohorts:
   # Demotion tiers, ordered by severity. A row matching several falls to the deepest.
   tiers: ["self-disagreement", "self-contradiction"]
   # Break-even precision a demoted row must clear. Measured from the ratio of correct to
-  # false abstentions (30:6 locality, 59:5 date) — NOT the ~98% a general verifier needs.
+  # false abstentions (30:6 locality, 59:5 date), not the ~98% a general verifier needs.
   break_even_precision:
     locality: 0.29
     date: 0.09

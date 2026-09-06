@@ -24,7 +24,7 @@ from museumscat.polish import danish_fold, pipe_generously, polish, strip_macron
 # --- the metric ---------------------------------------------------------------------
 
 def test_false_missing_is_the_maximum_per_row_loss():
-    
+
     assert metric.normalized_edit_distance("MISSING", "Dyrehaven") == 1.0
 
 
@@ -42,7 +42,7 @@ def test_date_separators_fold():
 
 
 def test_pipes_are_metric_invariant():
-   
+
     joined = metric.normalized_edit_distance("Rotholme Jyll", "Rotholme Jyll")
     piped = metric.normalized_edit_distance("Jyll | Rotholme", "Rotholme Jyll")
     assert joined == 0.0 and piped == 0.0
@@ -50,8 +50,8 @@ def test_pipes_are_metric_invariant():
 
 def test_aurc_rewards_putting_errors_last():
     errors = [0.0, 0.0, 1.0]
-    good = metric.aurc(errors, [0.9, 0.8, 0.1])   
-    bad = metric.aurc(errors, [0.1, 0.2, 0.9])    
+    good = metric.aurc(errors, [0.9, 0.8, 0.1])
+    bad = metric.aurc(errors, [0.1, 0.2, 0.9])
     assert good < bad
 
 
@@ -62,13 +62,13 @@ def test_aurc_of_no_errors_is_zero():
 # --- polish -------------------------------------------------------------------------
 
 def test_danish_fold_maps_umlauts_but_keeps_y_diaeresis():
-    
+
     assert danish_fold("Mön") == "Møn"
     assert danish_fold("Dÿrehaven") == "Dÿrehaven"
 
 
 def test_macron_strip_does_not_destroy_the_danish_ring():
-    
+
     assert strip_macrons("Vamdrūp") == "Vamdrup"
     assert strip_macrons("Århus") == "Århus"
 
@@ -93,12 +93,12 @@ def test_stratum_patterns():
 
 
 def test_majority_vote_returns_verbatim_text_not_canonical():
-  
+
     assert majority_vote(["Ørholm.", "Ørholm.", "Ørslev"]) == "Ørholm."
 
 
 def test_a_fifth_vote_cannot_reach_the_2_1_1_stratum():
-   
+
     four_readers = ["Ørslev", "Ørslev", "Ørholm", "Ørholm m"]
     assert stratum(four_readers) == "2-1-1"
     # A fifth reader with the right answer still loses the vote.
@@ -109,7 +109,7 @@ def test_a_fifth_vote_cannot_reach_the_2_1_1_stratum():
 
 def test_substitution_is_restricted_to_allowed_strata():
     result = substitute(["old"], ["new"], ["3-1"], ["2-1-1", "2-2", "1-1-1-1"])
-    assert result == ["old"], "3-1 measured +0.00164 — it must never be substituted into"
+    assert result == ["old"], "3-1 measured +0.00164, it must never be substituted into"
 
 
 def test_substitution_never_introduces_a_false_missing():

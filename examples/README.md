@@ -1,4 +1,4 @@
-# examples/ — synthetic stand-ins, so the pipeline runs with no competition data
+# examples/: synthetic stand-ins, so the pipeline runs with no competition data
 
 Every file here is **fabricated**. The competition's per-row ground truth is not
 redistributed (see the note in the top-level README), so these are hand-written rows that
@@ -16,17 +16,17 @@ correspond to no real specimen.
 
 ## What the rows are designed to exercise
 
-- **`sample_0003`** — the reader answers `MISSING` while grading the field `clear`. That
+- **`sample_0003`**: the reader answers `MISSING` while grading the field `clear`. That
   is a **self-contradiction**: the prompt requires an absent field to be graded `absent`.
   It is the cohort that was worth the most in the real campaign.
-- **`sample_0005`** — a correct abstention: `MISSING` *and* graded `absent`. It must NOT
+- **`sample_0005`**: a correct abstention: `MISSING` *and* graded `absent`. It must NOT
   be demoted, and it is why demoting `MISSING` blind fails.
-- **`sample_0002`** — the two draws disagree substantively. The **self-disagreement**
+- **`sample_0002`**: the two draws disagree substantively. The **self-disagreement**
   cohort.
-- **`sample_0007`** — the two draws differ only cosmetically, and canonicalisation must
+- **`sample_0007`**: the two draws differ only cosmetically, and canonicalisation must
   collapse them. Demoting cosmetic disagreements measurably *cost* score.
-- **`sample_0004`** — a multi-card answer with a pipe separator.
-- **`sample_0006`** — German umlauts and an invented macron, for the `polish` folds.
+- **`sample_0004`**: a multi-card answer with a pipe separator.
+- **`sample_0006`**: German umlauts and an invented macron, for the `polish` folds.
 
 ## Try it
 
@@ -48,4 +48,4 @@ python scripts/build_submission.py --compare examples/submission.csv /tmp/demote
 ```
 
 The last command should report both text columns `identical` and only the confidence
-column differing — which is the whole property that made cohort demotion safe.
+column differing. That is the property that made cohort demotion safe.
