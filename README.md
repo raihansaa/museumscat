@@ -227,8 +227,9 @@ is committed here in `results/`, and every number in the write-up above comes fr
 ## Citing
 
 > Md Raihan, Mathias Zinnen, Vincent Christlein. *Agreement-Aware Selective Prediction for
-> Museum Label Transcription.* Computer Vision for Natural Heritage (CVNH) workshop, ECCV 2026,
-> Malmö, 8 September 2026. Non-archival abstract and poster.
+> Museum Label Transcription.* Accepted as a non-archival abstract and poster at the
+> [Computer Vision for Natural Heritage (CVNH) workshop](https://computer-vision-for-natural-heritage.github.io/),
+> ECCV 2026, Malmö, 8 September 2026.
 
 ## Licence
 
