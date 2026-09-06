@@ -1,14 +1,6 @@
-"""Parse a reader's raw response into fields, and read back its legibility grades.
+#Parse a reader's raw response into fields, and read back its legibility grades.
 
-Readers are asked for strict JSON but do not always deliver it -- they wrap it in prose,
-fence it in markdown, or truncate it. Everything here is defensive on purpose: a failed
-parse must degrade to MISSING rather than raise, because a single unparseable row would
-otherwise abort a 3,300-image pass.
 
-``legibility()`` is separated from ``extract()`` because the self-contradiction cohort
-needs the grade *independently* of the value: it looks for rows whose value is MISSING
-while the grade says a label was visible.
-"""
 
 from __future__ import annotations
 
@@ -61,12 +53,7 @@ def extract(parsed: dict) -> tuple[str, str, str, str]:
 
 
 def legibility(raw: str, field: str) -> str:
-    """Legibility grade for one field, read straight from a cached raw response.
-
-    Returns "" when the reader gave no grade. Kept separate from extract() because the
-    self-contradiction cohort compares the grade against the *value*, and needs to
-    distinguish "graded absent" from "no grade at all".
-    """
+    
     key = DATE_LEGIBILITY_KEY if field.startswith("date") else LOCALITY_LEGIBILITY_KEY
     return str(parse_json(raw).get(key, "")).strip().lower()
 

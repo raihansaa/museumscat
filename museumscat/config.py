@@ -1,11 +1,4 @@
-"""Schema, conventions and paths for MuseumSCAT.
-
-Every constant here comes from the competition files or from the verbatim conventions
-observed in the 200 labelled rows of ``train.csv``. Paths are resolved from
-``config.yaml`` at the repository root, or from the ``MUSEUMSCAT_DATA`` environment
-variable, so the package runs against either the real competition data or the tiny
-synthetic stand-ins in ``examples/``.
-"""
+#Schema, conventions and paths for MuseumSCAT.
 
 from __future__ import annotations
 
@@ -27,17 +20,12 @@ CONF_COLS = {DATE_COL: DATE_CONF_COL, LOCALITY_COL: LOCALITY_CONF_COL}
 SUBMISSION_COLS = (ID_COL, DATE_COL, DATE_CONF_COL, LOCALITY_COL, LOCALITY_CONF_COL)
 
 # --- Conventions (learned from the labels) -----------------------------------------
-# The literal string the competition expects for an absent field. The metric compares
-# it as the empty string, so emitting MISSING where gold has text costs NED 1.0 -- the
-# maximum per-row loss, and the basis of the false-MISSING cohorts in cohorts.py.
+
 MISSING = "MISSING"
 MULTICARD_SEP = " | "
 DANISH_ALPHABET = "abcdefghijklmnopqrstuvwxyzæøå"
 
 # --- Cross-validation ---------------------------------------------------------------
-# Folds are GROUPED by gold locality cluster. Ungrouped folds leak badly: the same
-# place name recurs across many trays, so a row's near-duplicates land in the training
-# half and every estimate comes out optimistic.
 N_FOLDS = 5
 RANDOM_SEED = 42
 
@@ -45,7 +33,7 @@ RANDOM_SEED = 42
 def _load_yaml(path: Path) -> dict[str, Any]:
     try:
         import yaml
-    except ImportError:  # pragma: no cover - yaml is an optional convenience
+    except ImportError:  
         return {}
     if not path.exists():
         return {}

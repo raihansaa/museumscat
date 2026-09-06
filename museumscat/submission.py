@@ -1,13 +1,5 @@
-"""Assemble, write and validate a submission file.
+#Assemble, write and validate a submission file.
 
-The format mirrors ``train.csv``: ``image_file`` plus the two fields and their
-confidences. Localities contain commas (so they get quoted) and characters like æ/ø/å/ÿ,
-so we always write UTF-8 with minimal CSV quoting and a fixed line terminator.
-
-``validate`` is not optional. It caught real defects more than once, and it is what let us
-prove at the end that our two final submissions carried byte-identical TEXT and differed
-only in the confidence column -- which is the whole claim behind an ordering hedge.
-"""
 
 from __future__ import annotations
 
@@ -47,12 +39,7 @@ def write(df, path: str | Path) -> Path:
 
 
 def validate(submission_path: str | Path, test_path: str | Path) -> list[str]:
-    """Return a list of problems. Empty list means the file is safe to upload.
-
-    Checks: all five columns present; every test image_file appears exactly once, with no
-    extras and no duplicates; confidences numeric, finite and inside [0, 1]; no empty
-    prediction strings (an absent field must be the literal MISSING).
-    """
+    
     import pandas as pd
 
     errors: list[str] = []
@@ -95,12 +82,7 @@ def validate(submission_path: str | Path, test_path: str | Path) -> list[str]:
 
 
 def compare(path_a: str | Path, path_b: str | Path) -> dict:
-    """Diff two submissions field by field.
-
-    Used before ticking the finals: an ordering hedge is only an ordering hedge if the
-    TEXT is byte-identical and only the confidences move. Anything else is a different
-    system, not a hedge.
-    """
+    
     import pandas as pd
 
     a = pd.read_csv(path_a, dtype=str, keep_default_na=False, encoding="utf-8")

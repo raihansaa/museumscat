@@ -1,27 +1,6 @@
-"""The learned confidence ranker: predict a row's NED, use 1 - prediction as its confidence.
+# The learned confidence ranker: predict a row's NED, use 1 - prediction as its confidence.
 
-Mean AURC depends ONLY on the confidence *ranking*, so a per-field regressor that predicts
-NED from features available at test time can reorder the predictions closer to the oracle
-without changing a single transcription.
 
-Design notes, all of which were decided by measurement at n=200:
-
-* One model per field. Target = NED; confidence = ``1 - clip(pred, 0, 1)``.
-* Features are computable from the reader's raw JSON alone, so re-assembling a submission
-  is free -- no re-inference.
-* Model = a seed-ensemble of shallow gradient-boosted trees. Averaging damps single-seed
-  variance, which matters more than raw fit at this sample size. A linear model was worse.
-* ``base_conf`` (the legibility-derived confidence) is a feature, so the ranker can only
-  REFINE the working signal, never discard it.
-
-**Validation is grouped by gold locality cluster.** Ungrouped folds leak badly: the same
-place name recurs across many trays, so a row's near-duplicates land in the training half.
-
-**And a warning this repository should carry loudly.** This ranker is a *challenger*. On
-the hidden test set, wholesale confidence re-ranking went 0 for 8 -- including variants
-that looked perfect locally. Fit it, look at it, learn from the features it selects, but
-prefer the order-preserving demotions in ``cohorts.py`` for anything you actually ship.
-"""
 
 from __future__ import annotations
 
@@ -30,11 +9,11 @@ from collections.abc import Sequence
 
 from museumscat.config import MISSING, N_FOLDS, RANDOM_SEED
 
-# Seeds are FIXED, not searched.
+
 ENSEMBLE_SEEDS = tuple(range(12))
 GBR_PARAMS = {"n_estimators": 100, "max_depth": 2, "learning_rate": 0.05, "subsample": 0.8}
 
-# Fixed feature order -- train/test parity depends on it, and base_conf stays at index 0.
+
 DATE_FEATURES = ("base_conf", "is_missing", "length", "n_digits", "n_seg",
                  "has_year4", "has_month", "has_roman", "n_alpha_tok")
 LOCALITY_FEATURES = ("base_conf", "is_missing", "length", "n_seg", "n_tok",
@@ -72,7 +51,7 @@ def date_features(date: str, base_conf: float) -> dict[str, float]:
 
 
 def locality_features(locality: str, base_conf: float) -> dict[str, float]:
-    """Shape features of a locality string."""
+    
     missing = locality == MISSING
     tokens = [] if missing else locality.split()
     alpha = _ALPHA_RE.findall(locality.lower())
@@ -93,7 +72,7 @@ def locality_features(locality: str, base_conf: float) -> dict[str, float]:
 
 
 def feature_matrix(values: Sequence[str], base_confs: Sequence[float], is_date: bool):
-    """Stack per-row feature dicts into an array in the fixed feature order."""
+   
     import numpy as np
 
     builder = date_features if is_date else locality_features
@@ -103,7 +82,7 @@ def feature_matrix(values: Sequence[str], base_confs: Sequence[float], is_date: 
 
 
 def group_folds(groups: Sequence[str], n_folds: int = N_FOLDS, seed: int = RANDOM_SEED):
-    """Grouped folds over gold locality clusters -- never split a cluster across folds."""
+    
     import numpy as np
 
     rng = np.random.default_rng(seed)
@@ -115,7 +94,7 @@ def group_folds(groups: Sequence[str], n_folds: int = N_FOLDS, seed: int = RANDO
 
 
 def fit(features, targets):
-    """Seed-ensemble of shallow GBRs. Returns a list of fitted models."""
+   
     from sklearn.ensemble import GradientBoostingRegressor
 
     models = []

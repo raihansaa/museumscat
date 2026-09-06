@@ -286,28 +286,6 @@ GPT-4o, qwen3-VL-32B, and gpt-5.6 luna / sol / terra (all three tested, all thre
 **Libraries.** pandas, numpy, scikit-learn (the gradient-boosted confidence ranker), OpenCV and
 Pillow (cropping and image handling), unsloth (the LoRA line, abandoned).
 
-**Development.** Claude Code as the orchestrator, with Codex CLI as a standing second opinion
-under a delegation protocol, subagents constrained read-only for consultation, and `RESUME.md` —
-an append-only ledger that reached about 100 KB — recording every measurement and every kill so
-that no lever was ever re-tested by accident.
-
 **What we never used.** No model was trained on the competition images. No external gazetteer or
 place-name database was consulted. No handwriting-recognition model was fine-tuned. No test-time
 sampling above K=2.
-
----
-
-## If someone continues this
-
-In descending order of what we think it is worth:
-
-1. **Sample the reader K ≥ 3 times at non-zero temperature** and use the dispersion of the pool as
-   the confidence column. Our K=2 version paid. We priced the full-test buy at about $28 and never
-   spent it.
-2. **Build a verifier from a different model family** — the failure of ours was diagnosed
-   correctly and then generalised too far, from "this verifier is closed" to "verification is
-   closed."
-3. **Attack multi-card segment selection directly.** It is 49% of locality loss and we built
-   nothing specific for it.
-4. **Promote as well as demote.** Every operator we shipped moved rows down. A corroborated-
-   agreement tier moving rows up is the obvious mirror and we never tested one.

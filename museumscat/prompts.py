@@ -1,19 +1,6 @@
-"""The reader prompt, and the legibility -> confidence mapping it feeds.
+#The reader prompt, and the legibility -> confidence mapping it feeds.
 
-Two things about this prompt matter more than its wording.
 
-**It asks for strict JSON with a per-field legibility self-report.** The legibility grade
-is what the base confidence column is built from, and -- more importantly -- it is what
-makes the self-contradiction cohort in ``cohorts.py`` possible. The prompt states that an
-absent field must be reported as ``MISSING`` *and* graded ``absent``; a row that returns
-``MISSING`` while grading the same field ``clear`` or ``partial`` has violated its own
-instruction. That is a logical inconsistency, not a statistical enrichment, and it was the
-single largest lever of the campaign.
-
-**The verbatim conventions are ours and are deliberately different from the public
-notebooks**, which fold letters onto the modern alphabet. This is a verbatim task: the
-historical spellings are frequently correct, and normalising them destroys score.
-"""
 
 from __future__ import annotations
 
@@ -33,12 +20,7 @@ Transcription rules:
 
 Legibility: "clear" = every character certain; "partial" = some characters guessed; "unreadable" = a label is present but you cannot read it; "absent" = no such label exists (then the value must be MISSING)."""
 
-# Legibility -> base confidence. A confident MISSING ("absent") ranks ABOVE a shaky guess
-# ("unreadable"), which is what AURC rewards. Hand-set, not fitted.
-#
-# Note 0.85 for "absent": this is the second-highest band, which is exactly why a FALSE
-# MISSING is the most expensive row shape in the metric -- a maximal error (NED 1.0)
-# carried at high rank. See cohorts.py.
+
 LEGIBILITY_TO_CONF = {
     "clear": 0.92,
     "partial": 0.55,

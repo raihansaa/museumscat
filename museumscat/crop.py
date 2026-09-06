@@ -1,25 +1,6 @@
-"""Tag-region crop: find the pale label rectangles and crop tightly to them.
+#Tag-region crop: find the pale label rectangles and crop tightly to them.
 
-The originals are 8192x5464 and the date/locality tags are small cream/tan rectangles in
-a photograph that also contains museum equipment (logo, colour chart) down the left edge
-and the beetle in the middle. Passed whole, the image is downscaled by the reader and the
-handwriting becomes unreadable, so a crop is not optional.
 
-The detector thresholds that cream colour in HSV, discards boxes lying wholly inside the
-left equipment column, unions the survivors, pads, and extends downward to catch a value
-written on the specimen card itself.
-
-**The failure mode is the important part.** A colour-based cropper mistakes handwritten
-labels in blue ink for the equipment card, and silently throws away the labels it was
-supposed to find. Detection failures are therefore checked against a sanity rule --
-``_is_suspicious`` -- and anything abnormal falls back to a generous crop rather than a
-confident wrong one. The thresholds sit in the gap between the normal and pathological
-parts of the measured distribution over all 3,300 images.
-
-We shipped this cropper. It is worth knowing that in this competition **crops read
-slightly better and rank considerably worse than whole images**: an amputating cropper
-manufactures confident wrong answers, which is exactly what AURC punishes hardest.
-"""
 
 from __future__ import annotations
 
@@ -30,12 +11,12 @@ WORK_SIZE = 1200
 PAD_FRAC = 0.35
 MAX_EXTRA_HEIGHT_FRAC = 0.55
 
-# Left column occupied by museum equipment. Boxes entirely left of this are equipment.
+
 EQUIPMENT_COLUMN_FRAC = 0.27
-# Generous fallback: everything right of the equipment column, full height.
+
 WIDE_LEFT_FRAC = 0.16
 
-# Sanity bounds for a detected box, from the measured distribution over all 3,300 images.
+
 MIN_AREA_FRAC = 0.12
 MIN_WIDTH_FRAC = 0.24
 MAX_X_FRAC = 0.45
@@ -51,7 +32,7 @@ def detect_tag_region(img_bgr) -> tuple[int, int, int, int, str]:
     small = cv2.resize(img_bgr, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
 
     hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv, (0, 0, 150), (60, 90, 255))  # cream / tan paper
+    mask = cv2.inRange(hsv, (0, 0, 150), (60, 90, 255))  
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 

@@ -1,15 +1,17 @@
-# Agreement-Aware Selective Prediction — 14th place solution
+# MuseumSCAT
 
-**Md Raihan, Mathias Zinnen, Vincent Christlein** — Pattern Recognition Lab, FAU Erlangen-Nürnberg
+Reading the collection date and locality off 3,300 handwritten museum specimen labels, and
+knowing which of those readings to trust.
+
+**Md Raihan, Mathias Zinnen, Vincent Christlein**, Pattern Recognition Lab,
+FAU Erlangen-Nürnberg.
 
 Final: **private 0.02300 / public 0.02203**, rank 14, 85 submissions.
 Journey: `0.10743 → 0.03336 → 0.02997 → 0.02928 → 0.02606 → 0.02474 → 0.02263 → 0.02203`.
 
-We are presenting an analysis of this challenge as a non-archival poster at CVNH (ECCV 2026,
-Malmö, 8 September): *"Agreement-Aware Selective Prediction for Museum Label Transcription"*.
-This write-up is the engineering companion to it. The findings are ordered by how
-transferable they are to other collections, **not** by how much score they bought us — the
-most useful result here is the one that generalises furthest, not the one that ranked highest.
+The findings below are ordered by how transferable they are to other collections, not by how
+much score they bought us. The most useful result here is the one that generalises furthest,
+not the one that ranked highest.
 
 ---
 
@@ -155,7 +157,7 @@ scores *content* rather than formatting. Three observations:
 ```
 README.md                     this write-up
 docs/story.md                 the full campaign, start to finish: every phase, every
-                              tool, what worked, what didn't, and what we would do next
+                              tool, what worked, and what didn't
 config.yaml                   every tunable in one place, mirroring the numbers above
 
 museumscat/                   the pipeline, as an installable package

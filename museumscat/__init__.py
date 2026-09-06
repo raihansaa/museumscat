@@ -1,4 +1,4 @@
-"""Public MuseumSCAT implementation, 14th place.
+"""Public MuseumSCAT implementation.
 
 See docs/story.md for the full campaign narrative.
 """

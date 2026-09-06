@@ -1,22 +1,6 @@
-"""VLM reader clients: OpenRouter (most models) and the direct Gemini API (free tier).
+#VLM reader clients: OpenRouter (most models) and the direct Gemini API (free tier).
 
-Both paths share one image encoder, so a read from either differs from a cached read in
-exactly one respect -- the model. Every reader comparison in the write-up depends on that
-being true.
 
-Two operational details that cost us real time and are worth inheriting:
-
-**Reasoning models return empty content.** A model with a thinking budget can spend the
-entire completion allowance thinking and hand back ``""`` with ``finish_reason="length"``.
-The obvious fix -- retry with reasoning disabled -- is rejected outright by Gemini 3 with
-HTTP 400 "Reasoning is mandatory", so the fallback has to be *more* room rather than less
-thinking. Only the failure path pays for this, so cached readers still reproduce exactly.
-
-**Temperature is a real parameter and we left it at zero.** ``temperature`` defaults to 0
-for reproducibility. Passing ``>0`` and reading the same image K times gives a candidate
-pool whose dispersion is a confidence signal in its own right; our two-draw version paid,
-and we never pushed past K=2. See docs/story.md.
-"""
 
 from __future__ import annotations
 
@@ -40,19 +24,14 @@ MAX_TOKENS = 512
 MAX_WIDTH = 1568
 JPEG_QUALITY = 90
 
-# Transient failures are expected across a few thousand images: retry those and let
-# anything else surface immediately.
+
 RETRY_STATUSES = frozenset({408, 429, 500, 502, 503, 504})
 MAX_RETRIES = 5
 BACKOFF_BASE_S = 2.0
 
 NO_REASONING = {"reasoning": {"enabled": False}}
 
-# Validated Gemini pool. Free-tier quota is per DAY and per MODEL, so rotating this pool
-# yields roughly 120 free validated reads a day.
-#
-# NEVER add a "-lite" tier: gemini-3.5-flash-lite returned a collector's name as a
-# locality and mangled Danish (Orholm for Ørholm) on blank labels.
+
 GEMINI_POOL = (
     "gemini-3.7-flash",
     "gemini-3.6-flash",
@@ -148,12 +127,7 @@ def query_openrouter(
 
 
 def _recover_truncated(send, content: str) -> str:
-    """A reasoning model burned the budget thinking. Turn thinking off, or buy more room.
-
-    Gemini 3 rejects NO_REASONING with HTTP 400 "Reasoning is mandatory", so on that one
-    error we retry with a larger token budget instead -- the think block is billed against
-    max_tokens, and a truncated answer means it ran out mid-thought.
-    """
+    
     try:
         retry = send(NO_REASONING)
     except urllib.error.HTTPError as exc:
@@ -175,7 +149,7 @@ def query_gemini(
     api_key: str | None = None,
     temperature: float = 0.0,
 ) -> str:
-    """One read through the direct Gemini API (the free tier we used for validation)."""
+   
     key = api_key or _api_key("GEMINI_API_KEY")
     encoded = encode_image(image_path, max_width)
     body = {
