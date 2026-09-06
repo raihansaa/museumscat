@@ -1,5 +1,5 @@
-"""Tests for the properties the campaign actually depended on.
-"""
+#Tests for the properties the campaign actually depended on
+
 
 from __future__ import annotations
 
@@ -10,21 +10,21 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from museumscat import metric 
-from museumscat.cohorts import (  
+from museumscat import metric
+from museumscat.cohorts import (
     demote, error_rate, self_contradiction_mask, self_disagreement_mask, weight_still_held,
 )
-from museumscat.consensus import (  
+from museumscat.consensus import (
     canonical, majority_vote, stratum, substitute,
 )
-from museumscat.parsing import extract, is_missing, legibility, parse_json  
-from museumscat.polish import danish_fold, pipe_generously, polish, strip_macrons  
+from museumscat.parsing import extract, is_missing, legibility, parse_json
+from museumscat.polish import danish_fold, pipe_generously, polish, strip_macrons
 
 
 # --- the metric ---------------------------------------------------------------------
 
 def test_false_missing_is_the_maximum_per_row_loss():
-    """The claim the whole cohort argument rests on: MISSING vs real gold scores 1.0."""
+    
     assert metric.normalized_edit_distance("MISSING", "Dyrehaven") == 1.0
 
 
@@ -42,7 +42,7 @@ def test_date_separators_fold():
 
 
 def test_pipes_are_metric_invariant():
-    """Splitting on pipes cannot hurt: the metric scores the best permutation."""
+   
     joined = metric.normalized_edit_distance("Rotholme Jyll", "Rotholme Jyll")
     piped = metric.normalized_edit_distance("Jyll | Rotholme", "Rotholme Jyll")
     assert joined == 0.0 and piped == 0.0
@@ -50,8 +50,8 @@ def test_pipes_are_metric_invariant():
 
 def test_aurc_rewards_putting_errors_last():
     errors = [0.0, 0.0, 1.0]
-    good = metric.aurc(errors, [0.9, 0.8, 0.1])   # the wrong row ranked last
-    bad = metric.aurc(errors, [0.1, 0.2, 0.9])    # the wrong row ranked first
+    good = metric.aurc(errors, [0.9, 0.8, 0.1])   
+    bad = metric.aurc(errors, [0.1, 0.2, 0.9])    
     assert good < bad
 
 
@@ -62,13 +62,13 @@ def test_aurc_of_no_errors_is_zero():
 # --- polish -------------------------------------------------------------------------
 
 def test_danish_fold_maps_umlauts_but_keeps_y_diaeresis():
-    """ÿ occurs in the ground truth (Dÿrehaven) and must survive the fold."""
+    
     assert danish_fold("Mön") == "Møn"
     assert danish_fold("Dÿrehaven") == "Dÿrehaven"
 
 
 def test_macron_strip_does_not_destroy_the_danish_ring():
-    """The reason this is a named-character table and not an NFD strip."""
+    
     assert strip_macrons("Vamdrūp") == "Vamdrup"
     assert strip_macrons("Århus") == "Århus"
 
@@ -93,12 +93,12 @@ def test_stratum_patterns():
 
 
 def test_majority_vote_returns_verbatim_text_not_canonical():
-    """The task is verbatim: the winner keeps its own spelling and punctuation."""
+  
     assert majority_vote(["Ørholm.", "Ørholm.", "Ørslev"]) == "Ørholm."
 
 
 def test_a_fifth_vote_cannot_reach_the_2_1_1_stratum():
-    """The structural fact behind 'substitute, don't vote'."""
+   
     four_readers = ["Ørslev", "Ørslev", "Ørholm", "Ørholm m"]
     assert stratum(four_readers) == "2-1-1"
     # A fifth reader with the right answer still loses the vote.

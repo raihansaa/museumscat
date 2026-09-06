@@ -39,7 +39,7 @@ def write(df, path: str | Path) -> Path:
 
 
 def validate(submission_path: str | Path, test_path: str | Path) -> list[str]:
-    
+
     import pandas as pd
 
     errors: list[str] = []
@@ -82,7 +82,7 @@ def validate(submission_path: str | Path, test_path: str | Path) -> list[str]:
 
 
 def compare(path_a: str | Path, path_b: str | Path) -> dict:
-    
+
     import pandas as pd
 
     a = pd.read_csv(path_a, dtype=str, keep_default_na=False, encoding="utf-8")

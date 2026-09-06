@@ -9,8 +9,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from museumscat import metric 
-from museumscat.config import CONF_COLS, DATE_COL, ID_COL, LOCALITY_COL  
+from museumscat import metric
+from museumscat.config import CONF_COLS, DATE_COL, ID_COL, LOCALITY_COL
 
 
 def _decompose(errors, confidences, label: str) -> float:

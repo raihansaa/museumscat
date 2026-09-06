@@ -14,7 +14,7 @@ ABSENT_GRADES = ("absent", "none", "")
 
 
 def demote(confidences: Sequence[float], tiers: Sequence[Sequence[bool]]) -> list[float]:
-   
+
     import numpy as np
 
     conf = np.asarray(confidences, dtype=float)
@@ -52,7 +52,7 @@ def self_contradiction_mask(values: Sequence[str], raws: Sequence[str], field: s
 def self_disagreement_mask(
     draw_a: Sequence[str], draw_b: Sequence[str], is_date: bool = False
 ) -> list[bool]:
-   
+
     return [
         canonical(a, is_date) != canonical(b, is_date)
         for a, b in zip(draw_a, draw_b)
@@ -71,7 +71,7 @@ def error_rate(mask: Sequence[bool], errors: Sequence[float], threshold: float =
 
 
 def weight_still_held(mask: Sequence[bool], confidences: Sequence[float]) -> float:
-    
+
     import numpy as np
 
     conf = np.asarray(confidences, dtype=float)

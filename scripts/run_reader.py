@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from museumscat.config import (  # noqa: E402
     DATE_COL, ID_COL, LOCALITY_COL, MISSING,
 )
-from museumscat.parsing import extract, parse_json  
+from museumscat.parsing import extract, parse_json
 from museumscat.readers import DEFAULT_MODEL, query
 
 COLUMNS = (ID_COL, DATE_COL, LOCALITY_COL, "date_legibility", "locality_legibility", "raw")

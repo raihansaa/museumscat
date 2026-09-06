@@ -53,7 +53,7 @@ def extract(parsed: dict) -> tuple[str, str, str, str]:
 
 
 def legibility(raw: str, field: str) -> str:
-    
+
     key = DATE_LEGIBILITY_KEY if field.startswith("date") else LOCALITY_LEGIBILITY_KEY
     return str(parse_json(raw).get(key, "")).strip().lower()
 

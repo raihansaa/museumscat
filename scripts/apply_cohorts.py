@@ -10,11 +10,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from museumscat import metric  
-from museumscat.cohorts import (  
+from museumscat import metric
+from museumscat.cohorts import (
     demote, error_rate, self_contradiction_mask, self_disagreement_mask, weight_still_held,
 )
-from museumscat.config import CONF_COLS, DATE_COL, ID_COL, LOCALITY_COL  
+from museumscat.config import CONF_COLS, DATE_COL, ID_COL, LOCALITY_COL
 
 
 def main(argv: list[str]) -> int:

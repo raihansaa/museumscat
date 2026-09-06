@@ -51,7 +51,7 @@ def date_features(date: str, base_conf: float) -> dict[str, float]:
 
 
 def locality_features(locality: str, base_conf: float) -> dict[str, float]:
-    
+
     missing = locality == MISSING
     tokens = [] if missing else locality.split()
     alpha = _ALPHA_RE.findall(locality.lower())
@@ -72,7 +72,7 @@ def locality_features(locality: str, base_conf: float) -> dict[str, float]:
 
 
 def feature_matrix(values: Sequence[str], base_confs: Sequence[float], is_date: bool):
-   
+
     import numpy as np
 
     builder = date_features if is_date else locality_features
@@ -82,7 +82,7 @@ def feature_matrix(values: Sequence[str], base_confs: Sequence[float], is_date: 
 
 
 def group_folds(groups: Sequence[str], n_folds: int = N_FOLDS, seed: int = RANDOM_SEED):
-    
+
     import numpy as np
 
     rng = np.random.default_rng(seed)
@@ -94,7 +94,7 @@ def group_folds(groups: Sequence[str], n_folds: int = N_FOLDS, seed: int = RANDO
 
 
 def fit(features, targets):
-   
+
     from sklearn.ensemble import GradientBoostingRegressor
 
     models = []

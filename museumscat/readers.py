@@ -127,7 +127,7 @@ def query_openrouter(
 
 
 def _recover_truncated(send, content: str) -> str:
-    
+
     try:
         retry = send(NO_REASONING)
     except urllib.error.HTTPError as exc:
@@ -149,7 +149,7 @@ def query_gemini(
     api_key: str | None = None,
     temperature: float = 0.0,
 ) -> str:
-   
+
     key = api_key or _api_key("GEMINI_API_KEY")
     encoded = encode_image(image_path, max_width)
     body = {
@@ -161,8 +161,9 @@ def query_gemini(
         }],
         "generationConfig": {"temperature": temperature, "maxOutputTokens": MAX_TOKENS * 8},
     }
-    url = GEMINI_URL.format(model=model) + f"?key={key}"
-    payload = _post(url, body, {"Content-Type": "application/json"}, timeout)
+    url = GEMINI_URL.format(model=model)
+    headers = {"Content-Type": "application/json", "x-goog-api-key": key}
+    payload = _post(url, body, headers, timeout)
     candidates = payload.get("candidates") or []
     if not candidates:
         raise RuntimeError(f"no candidates in response: {str(payload)[:300]}")

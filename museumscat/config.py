@@ -33,7 +33,7 @@ RANDOM_SEED = 42
 def _load_yaml(path: Path) -> dict[str, Any]:
     try:
         import yaml
-    except ImportError:  
+    except ImportError:
         return {}
     if not path.exists():
         return {}

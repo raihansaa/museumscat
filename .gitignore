@@ -4,5 +4,9 @@ __pycache__/
 .build/
 outputs/
 
+# API keys are read from the environment; never commit a local env file.
+.env
+.env.*
+
 # Per-row competition data is deliberately not redistributed (gold strings).
 data/

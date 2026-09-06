@@ -9,9 +9,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from museumscat.config import DATE_COL, ID_COL, LOCALITY_COL  
-from museumscat.consensus import majority_vote, stratum  
-from museumscat.polish import polish  
+from museumscat.config import DATE_COL, ID_COL, LOCALITY_COL
+from museumscat.consensus import majority_vote, stratum
+from museumscat.polish import polish
 from museumscat.prompts import confidence_of
 
 

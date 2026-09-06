@@ -11,8 +11,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from museumscat.config import data_paths 
-from museumscat.crop import CROP_MAX_DIM, crop_tag_region  
+from museumscat.config import data_paths
+from museumscat.crop import CROP_MAX_DIM, crop_tag_region
 
 JPEG_QUALITY = 95
 

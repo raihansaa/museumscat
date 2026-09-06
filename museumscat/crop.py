@@ -32,7 +32,7 @@ def detect_tag_region(img_bgr) -> tuple[int, int, int, int, str]:
     small = cv2.resize(img_bgr, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
 
     hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv, (0, 0, 150), (60, 90, 255))  
+    mask = cv2.inRange(hsv, (0, 0, 150), (60, 90, 255))
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 

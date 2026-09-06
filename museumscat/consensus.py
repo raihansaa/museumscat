@@ -22,12 +22,12 @@ from museumscat.parsing import is_missing
 def canonical(text: object, is_date: bool = False) -> str:
     #Metric-canonical form of a string, for comparing two readers' answers.
 
-    
+
     return metric._canonicalize(polish(str(text)), is_date)
 
 
 def stratum(answers: Sequence[str], is_date: bool = False) -> str:
-    
+
     counts = sorted(Counter(canonical(a, is_date) for a in answers).values(), reverse=True)
     if len(counts) == 1:
         return f"{counts[0]}-0"
@@ -35,7 +35,7 @@ def stratum(answers: Sequence[str], is_date: bool = False) -> str:
 
 
 def majority_vote(answers: Sequence[str], is_date: bool = False) -> str:
-    
+
     answers = [str(a) for a in answers if str(a).strip()]
     if not answers:
         return MISSING
@@ -48,7 +48,7 @@ def majority_vote(answers: Sequence[str], is_date: bool = False) -> str:
 
 
 def agreement_fraction(answer: str, pool: Iterable[str], is_date: bool = False) -> float:
-   
+
     values = [str(v) for v in pool]
     if not values:
         return 0.0
@@ -64,7 +64,7 @@ def substitute(
     *,
     keep_missing: bool = True,
 ) -> list[str]:
-    
+
     allowed = set(allowed_strata)
     if not (len(base) == len(challenger) == len(strata)):
         raise ValueError("base, challenger and strata must have equal length")

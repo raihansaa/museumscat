@@ -15,7 +15,7 @@ DANISH_FOLD = {
     "φ": "ø",  # observed once: the model rendering ø as Greek phi
 }
 
-# Macron vowels only. 
+# Macron vowels only.
 MACRON_FOLD = {
     "ā": "a", "ē": "e", "ī": "i", "ō": "o", "ū": "u",
     "Ā": "A", "Ē": "E", "Ī": "I", "Ō": "O", "Ū": "U",

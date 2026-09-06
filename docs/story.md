@@ -5,6 +5,11 @@ says what the final system was and why it worked. This document says how we got 
 phase, every tool, and the order in which we learned things, including the parts that went
 nowhere.
 
+The filenames in this document are the ones from the working repository as it stood at the
+time. Only a subset of that code shipped here, reorganised into `museumscat/` and `scripts/`.
+The rest were experiments that did not survive. See "What is in this repository" in the
+write-up for the shipped layout.
+
 Final: **private AURC 0.02300 / public 0.02203**, 14th of 126 teams, 85 submissions, across
 roughly seven weeks.
 

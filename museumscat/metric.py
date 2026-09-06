@@ -36,7 +36,7 @@ def levenshtein(a: str, b: str) -> int:
 
 
 def _canonicalize(text: str, is_date: bool) -> str:
-    
+
     folded = text.replace("|", " ").casefold()
     if is_date:
         folded = _DATE_SEP_RE.sub(" ", folded)
@@ -53,7 +53,7 @@ def _is_missing(text: str) -> bool:
 
 
 def normalized_edit_distance(prediction: str, target: str, is_date: bool = False) -> float:
-    
+
     pred = "" if prediction is None else str(prediction)
     tgt = "" if target is None else str(target)
     gt = "" if _is_missing(tgt) else _canonicalize(tgt, is_date)
@@ -68,7 +68,7 @@ def normalized_edit_distance(prediction: str, target: str, is_date: bool = False
 
 def legacy_normalized_edit_distance(prediction: str, target: str,
                                     is_date: bool = False) -> float:
-    
+
     pred = "" if prediction is None else str(prediction)
     tgt = "" if target is None else str(target)
     return _ned(pred, tgt)
@@ -82,7 +82,7 @@ def field_errors(predictions: Sequence[str], targets: Sequence[str],
 
 
 def aurc(errors: Sequence[float], confidences: Sequence[float]) -> float:
-    
+
     if len(errors) != len(confidences):
         raise ValueError("errors and confidences must have equal length")
     n = len(errors)

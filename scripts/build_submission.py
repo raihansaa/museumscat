@@ -10,10 +10,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from museumscat.config import (  
+from museumscat.config import (
     DATE_COL, ID_COL, LOCALITY_COL, data_paths,
 )
-from museumscat.submission import assemble, compare, validate, write  
+from museumscat.submission import assemble, compare, validate, write
 
 
 def main(argv: list[str]) -> int:
