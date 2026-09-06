@@ -197,7 +197,8 @@ on the labelled set and was wrong all 8 times, with a real gold value each time.
 The break-even arithmetic is the transferable part. Demoting `MISSING` blind fails, because
 correct abstentions outnumber false ones 30:6 and 59:5. But those same counts say a demoted row
 only needs **29% precision (locality) / 9% (date)**, against the roughly 98% we had assumed a
-verifier needed. We had abandoned a perfectly good instrument earlier for missing a bar that did not apply.
+verifier needed. We had abandoned a working instrument earlier for missing a bar that never
+applied to it.
 
 That session was worth −0.00403, the largest of the campaign, and it moved us from rank 14 to 12
 on the public board.

@@ -31,74 +31,51 @@ than by how much score they bought us.
    untouched.
 
 ```mermaid
-%%{init: {"flowchart": {"htmlLabels": false, "padding": 20}, "themeVariables": {"fontFamily": "arial"}}}%%
 flowchart TB
-  IMG["specimen<br/>photographs"] --> CROP["tag crop to<br/>the label band"]
-  CROP --> READ["four readers<br/>vote independently"]
-  CROP --> G["gemini-3.7-flash<br/>never votes"]
+  A["3,300 photographs  "]
+  B["crop to label band  "]
+  C["four VLM readers  "]
+  D["parse text + grade  "]
+  A --> B --> C --> D
 
-  READ --> VOTE["per-row<br/>majority vote"]
-  READ --> CONF
+  D -->|text| T1["vote, then polish  "]
+  D -->|rank| R1["grade to confidence  "]
+  T1 --> T2["substitute text  "]
+  R1 --> R2["demote cohorts  "]
 
-  subgraph TT["TEXT"]
-    POLISH["polish the<br/>voted string"]
-    STRAT["agreement stratum<br/>gates it"]
-    SUB["text<br/>substitution"]
-    POLISH --> SUB
-    STRAT --> SUB
-  end
+  T2 --> M["assemble, validate  "]
+  R2 --> M
+  M --> Z["final submission  "]
 
-  subgraph RT["RANK"]
-    CONF["legibility grade<br/>to confidence"]
-    SC["MISSING while<br/>graded visible"]
-    DEM["cohort<br/>demotion"]
-    CONF --> DEM
-    SC --> DEM
-  end
+  G1["gate: strata  "] -.-> T2
+  G2["gate: error rate  "] -.-> R2
 
-  VOTE --> POLISH
-  VOTE --> STRAT
-  G -.-> SUB
-  G -.-> DEM
-
-  SUB --> OUT["assemble<br/>and validate"]
-  DEM --> OUT
-  OUT --> Z["submission"]
-
-  style TT fill:none,stroke:#0969da
-  style RT fill:none,stroke:#bc4c00
-  classDef t stroke:#0969da,stroke-width:2px
-  classDef r stroke:#bc4c00,stroke-width:2px
-  class POLISH,SUB t
-  class CONF,DEM r
+  classDef text stroke:#0969da,stroke-width:2px
+  classDef rank stroke:#bc4c00,stroke-width:2px
+  class T1,T2 text
+  class R1,R2 rank
 ```
 
-The two lanes are the whole design. A submission row is a transcription and a confidence, and
-**no stage writes both**. Substitution rewrites text and leaves the ranking untouched; demotion
-rewrites the ranking and leaves text untouched. That is what let the two final entries be proved
-byte-identical in text and different only in ordering.
+| stage | what it does | script |
+|---|---|---|
+| tag crop | crops the 8192×5464 photograph down to the label band, with a fallback | `crop_tags.py` |
+| read | one pass per reader: four readers, plus a second draw of one. Every raw response is cached, so the pass is resumable and re-scorable | `run_reader.py` |
+| parse | each response becomes a date, a locality, and a legibility grade per field | in `run_reader.py` |
+| vote and polish | majority vote, then the Danish fold, the macron strip and the pipe split. Adds the agreement stratum and the base confidence | `build_ensemble.py` |
+| substitute | a stronger reader replaces text in the allowed strata only, and is never permitted to turn an answer into `MISSING` | `substitute.py` |
+| assemble | writes the competition format and validates it before upload | `build_submission.py` |
+| demote | pushes the self-disagreement and self-contradiction tiers to the back of the order | `apply_cohorts.py` |
 
-The four voting readers are qwen2.5-VL-7B, qwen3-VL-32B, GPT-4o and Claude Sonnet 5.
-gemini-3.7-flash never votes, which is why it is not one of them. It reads every row twice:
-once as the challenger whose re-read replaces the voted text, and again so that the disagreement
-between its two draws can flag a row for demotion. Its own instability is the ranking signal.
+The two branches are the point. Every row carries both a text and a confidence, and each stage
+writes exactly one of them: substitution rewrites text and leaves the ranking alone, demotion
+rewrites the ranking and leaves text alone. That invariant is what let the two final submissions
+be proved byte-identical in text and different only in ordering. The branches are drawn by which
+column a stage writes, so note that in execution the demotion step runs on the assembled file.
 
-Only two **gates** cross from the 200 labelled rows: which agreement strata may be overwritten,
-and the rule that a cohort ships only at a 100% error rate. The gradient-boosted ranker, the only
-component ever fitted, never shipped, because wholesale re-ranking went 0 for 8.
-
-The scripts below run in that order, with one exception: demotion runs on the already-assembled
-file, rewriting only its confidence column.
-
-| stage | script |
-|---|---|
-| tag crop | `crop_tags.py` |
-| read, one pass per reader, cached and resumable | `run_reader.py` |
-| parse to fields and a legibility grade | in `run_reader.py` |
-| vote, polish, agreement stratum, base confidence | `build_ensemble.py` |
-| text substitution | `substitute.py` |
-| assemble and validate | `build_submission.py` |
-| cohort demotion | `apply_cohorts.py` |
+Nothing else crosses in from the 200 labelled rows except the two **gates**: which agreement
+strata a stronger reader may overwrite, and the rule that a cohort ships only at a 100% error
+rate. The gradient-boosted ranker, the only component actually fitted, has no arrow in at all,
+because wholesale re-ranking went 0 for 8 on the hidden test set.
 
 Baseline of the four-reader system (out-of-fold on the 200 labels): locality mean NED 0.157,
 AURC 0.0958; date 0.047 and 0.0347.
